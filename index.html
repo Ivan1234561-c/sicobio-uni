@@ -127,10 +127,174 @@
 
     /* Chart container */
     .chart-wrap { position: relative; height: 140px; }
+
+    /* AUTH SCREENS */
+    .auth-screen {
+      position: fixed; inset: 0; z-index: 100;
+      background: linear-gradient(135deg, #0f172a 0%, #1e2a6e 60%, #0f172a 100%);
+      display: flex; align-items: center; justify-content: center;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .auth-screen.hidden-screen { opacity: 0; pointer-events: none; transform: translateY(-20px); }
+    .auth-bg-grid {
+      position: absolute; inset: 0;
+      background-image: linear-gradient(rgba(29,78,216,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(29,78,216,0.08) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    .auth-card {
+      position: relative; z-index: 10;
+      background: rgba(30,42,110,0.45);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(96,165,250,0.2);
+      border-radius: 24px;
+      padding: 40px;
+      width: 100%; max-width: 420px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+    }
+    .auth-input {
+      width: 100%; background: rgba(15,23,42,0.7);
+      border: 1px solid rgba(96,165,250,0.2); border-radius: 12px;
+      padding: 12px 16px; color: #fff; font-size: 14px;
+      outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .auth-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+    .auth-input::placeholder { color: #475569; }
+    .auth-btn {
+      width: 100%; background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+      color: #fff; font-weight: 700; font-size: 15px; padding: 13px;
+      border-radius: 12px; border: none; cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(59,130,246,0.35);
+      font-family: 'Inter', sans-serif;
+    }
+    .auth-btn:hover { opacity: 0.92; box-shadow: 0 6px 28px rgba(59,130,246,0.5); }
+    .auth-btn:active { transform: scale(0.98); }
+    .auth-link { color: #60a5fa; cursor: pointer; text-decoration: underline; font-size: 13px; }
+    .auth-link:hover { color: #93c5fd; }
+    .orb { position: absolute; border-radius: 50%; filter: blur(80px); animation: orbFloat 8s ease-in-out infinite; }
+    .orb-1 { width:300px; height:300px; background:rgba(29,78,216,0.25); top:-80px; right:-80px; }
+    .orb-2 { width:200px; height:200px; background:rgba(59,130,246,0.15); bottom:-60px; left:-60px; animation-delay:3s; }
+    @keyframes orbFloat { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(15px,-20px) scale(1.05);} }
+    #main-app { display: none; }
+    @keyframes shake { 0%,100%{transform:translateX(0);} 20%,60%{transform:translateX(-6px);} 40%,80%{transform:translateX(6px);} }
+    .shake { animation: shake 0.4s ease; }
   </style>
 </head>
 
 <body class="bg-uni-900 text-gray-100 min-h-screen">
+
+  <!-- LOGIN SCREEN -->
+  <div id="screen-login" class="auth-screen">
+    <div class="auth-bg-grid"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="auth-card">
+      <div class="flex flex-col items-center mb-8">
+        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-uni-700 rounded-2xl flex items-center justify-center shadow-2xl mb-4">
+          <svg class="w-9 h-9 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 11c0-1.1-.9-2-2-2s-2 .9-2 2c0 2.5 4 6 4 6s4-3.5 4-6c0-1.1-.9-2-2-2s-2 .9-2 2z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3C7 3 3 7 3 12c0 2.4.9 4.6 2.3 6.3"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c5 0 9 4 9 9 0 2.4-.9 4.6-2.3 6.3"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 12c0-2.2 1.8-4 4-4s4 1.8 4 4c0 3-3 6.5-4 7.5"/>
+          </svg>
+        </div>
+        <h1 class="text-2xl font-black text-white tracking-tight">SiCoBio-UNI</h1>
+        <p class="text-sm text-blue-300 mt-1">Sistema de Control de Acceso Biometrico</p>
+        <p class="text-xs text-gray-500 mt-2 italic text-center">"Tu identidad es tu llave, tu huella tu libertad de acceso."</p>
+      </div>
+      <div class="flex flex-col gap-4">
+        <div>
+          <label class="block text-xs text-gray-400 mb-1.5 font-medium">Usuario / Correo institucional</label>
+          <input id="login-user" class="auth-input" type="text" placeholder="usuario@universidad.edu.mx" />
+        </div>
+        <div>
+          <label class="block text-xs text-gray-400 mb-1.5 font-medium">Contrasena</label>
+          <input id="login-pass" class="auth-input" type="password" placeholder="••••••••" />
+        </div>
+        <div id="login-error" class="hidden bg-red-900/40 border border-red-700/50 rounded-xl px-3 py-2 text-xs text-red-300">Credenciales incorrectas.</div>
+        <button onclick="doLogin()" class="auth-btn mt-1">Iniciar Sesion</button>
+        <div class="text-center text-xs text-gray-500">
+          No tienes cuenta?
+          <span class="auth-link ml-1" onclick="showScreen('register')">Registrate aqui</span>
+        </div>
+        <div class="bg-uni-900/60 rounded-xl p-3 border border-uni-700/40">
+          <p class="text-xs text-gray-500 font-semibold mb-1">Credenciales de demo:</p>
+          <p class="text-xs font-mono text-blue-400">Usuario: <span class="text-white">admin</span> &nbsp; Contrasena: <span class="text-white">1234</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REGISTER SCREEN -->
+  <div id="screen-register" class="auth-screen hidden-screen">
+    <div class="auth-bg-grid"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="auth-card" style="max-width:460px">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-uni-700 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
+          <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+          </svg>
+        </div>
+        <div>
+          <h2 class="text-lg font-black text-white">Crear Cuenta</h2>
+          <p class="text-xs text-blue-300">Personal autorizado SiCoBio-UNI</p>
+        </div>
+      </div>
+      <div class="flex flex-col gap-3">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs text-gray-400 mb-1.5 font-medium">Nombre</label>
+            <input id="reg-name" class="auth-input" type="text" placeholder="Juan" />
+          </div>
+          <div>
+            <label class="block text-xs text-gray-400 mb-1.5 font-medium">Apellido</label>
+            <input id="reg-lastname" class="auth-input" type="text" placeholder="Perez" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs text-gray-400 mb-1.5 font-medium">Correo institucional</label>
+          <input id="reg-email" class="auth-input" type="email" placeholder="usuario@universidad.edu.mx" />
+        </div>
+        <div>
+          <label class="block text-xs text-gray-400 mb-1.5 font-medium">No. de empleado / Matricula</label>
+          <input id="reg-empid" class="auth-input" type="text" placeholder="EMP-0042" />
+        </div>
+        <div>
+          <label class="block text-xs text-gray-400 mb-1.5 font-medium">Rol</label>
+          <select id="reg-role" class="auth-input">
+            <option value="">Seleccionar rol...</option>
+            <option>Guardia de Seguridad</option>
+            <option>Coordinador de Seguridad</option>
+            <option>Administrador del Sistema</option>
+            <option>Personal TI</option>
+          </select>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs text-gray-400 mb-1.5 font-medium">Contrasena</label>
+            <input id="reg-pass" class="auth-input" type="password" placeholder="••••••••" />
+          </div>
+          <div>
+            <label class="block text-xs text-gray-400 mb-1.5 font-medium">Confirmar</label>
+            <input id="reg-pass2" class="auth-input" type="password" placeholder="••••••••" />
+          </div>
+        </div>
+        <div id="reg-error" class="hidden bg-red-900/40 border border-red-700/50 rounded-xl px-3 py-2 text-xs text-red-300"></div>
+        <div id="reg-success" class="hidden bg-emerald-900/40 border border-emerald-700/50 rounded-xl px-3 py-2 text-xs text-emerald-300">Cuenta creada. Redirigiendo al inicio de sesion...</div>
+        <button onclick="doRegister()" class="auth-btn">Crear Cuenta</button>
+        <div class="text-center text-xs text-gray-500">
+          Ya tienes cuenta?
+          <span class="auth-link ml-1" onclick="showScreen('login')">Iniciar sesion</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main App wrapper -->
+  <div id="main-app">
 
   <!-- ══════════════════════════════════════════════
        HEADER
@@ -163,9 +327,13 @@
       <div class="flex items-center gap-4 text-xs">
         <div class="flex items-center gap-1.5">
           <span class="w-2 h-2 rounded-full bg-emerald-400 infra-dot"></span>
-          <span class="text-gray-300">Sistema En Línea</span>
+          <span class="text-gray-300">Sistema En Linea</span>
         </div>
         <div id="live-clock" class="font-mono text-blue-300 font-medium text-sm"></div>
+        <div class="flex items-center gap-2 border-l border-uni-700 pl-4">
+          <span id="header-user" class="text-gray-300 font-medium"></span>
+          <button onclick="doLogout()" class="px-3 py-1 rounded-lg bg-uni-700 hover:bg-red-900/60 border border-uni-600 hover:border-red-700 text-gray-400 hover:text-red-300 transition-all text-xs font-semibold">Cerrar sesion</button>
+        </div>
       </div>
     </div>
   </header>
@@ -616,15 +784,102 @@
 
   <!-- Footer -->
   <footer class="border-t border-uni-800 mt-4 py-4 text-center text-xs text-gray-600">
-    <p>SiCoBio-UNI · Sistema de Control de Acceso Biométrico por Huella Dactilar · Proyecto Escolar &copy; 2026</p>
+    <p>SiCoBio-UNI · Sistema de Control de Acceso Biometrico por Huella Dactilar · Proyecto Escolar &copy; 2026</p>
     <p class="mt-0.5 italic text-gray-700">"Tu identidad es tu llave, tu huella tu libertad de acceso."</p>
   </footer>
+  </div><!-- /main-app -->
 
 
   <!-- ══════════════════════════════════════════════
        JAVASCRIPT
   ══════════════════════════════════════════════ -->
   <script>
+  // ════════════════════════════════════
+  //  AUTH
+  // ════════════════════════════════════
+  const AUTH_USERS = [
+    { user: 'admin', pass: '1234', displayName: 'Admin del Sistema' }
+  ];
+  let currentUser = null;
+
+  function showScreen(name) {
+    document.getElementById('screen-login').classList.toggle('hidden-screen', name !== 'login');
+    document.getElementById('screen-register').classList.toggle('hidden-screen', name !== 'register');
+  }
+
+  function doLogin() {
+    const user = document.getElementById('login-user').value.trim();
+    const pass = document.getElementById('login-pass').value;
+    const errEl = document.getElementById('login-error');
+    errEl.classList.add('hidden');
+    const found = AUTH_USERS.find(u => (u.user === user || u.email === user) && u.pass === pass);
+    if (found) {
+      currentUser = found;
+      document.getElementById('header-user').textContent = 'Bienvenido, ' + found.displayName;
+      document.getElementById('screen-login').classList.add('hidden-screen');
+      document.getElementById('screen-register').classList.add('hidden-screen');
+      document.getElementById('main-app').style.display = 'block';
+      setTimeout(() => {
+        document.getElementById('screen-login').style.display = 'none';
+        document.getElementById('screen-register').style.display = 'none';
+      }, 500);
+    } else {
+      errEl.classList.remove('hidden');
+      ['login-user','login-pass'].forEach(id => {
+        const el = document.getElementById(id);
+        el.classList.add('shake');
+        setTimeout(() => el.classList.remove('shake'), 400);
+      });
+    }
+  }
+
+  function doRegister() {
+    const name     = document.getElementById('reg-name').value.trim();
+    const lastname = document.getElementById('reg-lastname').value.trim();
+    const email    = document.getElementById('reg-email').value.trim();
+    const empid    = document.getElementById('reg-empid').value.trim();
+    const role     = document.getElementById('reg-role').value;
+    const pass     = document.getElementById('reg-pass').value;
+    const pass2    = document.getElementById('reg-pass2').value;
+    const errEl    = document.getElementById('reg-error');
+    const okEl     = document.getElementById('reg-success');
+    errEl.classList.add('hidden'); okEl.classList.add('hidden');
+    if (!name || !lastname || !email || !empid || !role || !pass) {
+      errEl.textContent = 'Por favor completa todos los campos.'; errEl.classList.remove('hidden'); return;
+    }
+    if (pass !== pass2) {
+      errEl.textContent = 'Las contrasenias no coinciden.'; errEl.classList.remove('hidden'); return;
+    }
+    if (pass.length < 4) {
+      errEl.textContent = 'La contrasenia debe tener al menos 4 caracteres.'; errEl.classList.remove('hidden'); return;
+    }
+    if (AUTH_USERS.find(u => u.user === email || u.email === email)) {
+      errEl.textContent = 'Este correo ya esta registrado.'; errEl.classList.remove('hidden'); return;
+    }
+    AUTH_USERS.push({ user: email, email, pass, displayName: name + ' ' + lastname, role });
+    okEl.classList.remove('hidden');
+    ['reg-name','reg-lastname','reg-email','reg-empid','reg-pass','reg-pass2'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('reg-role').value = '';
+    setTimeout(() => { okEl.classList.add('hidden'); showScreen('login'); }, 2000);
+  }
+
+  function doLogout() {
+    currentUser = null;
+    document.getElementById('main-app').style.display = 'none';
+    document.getElementById('screen-login').style.display = '';
+    document.getElementById('screen-register').style.display = '';
+    document.getElementById('login-user').value = '';
+    document.getElementById('login-pass').value = '';
+    document.getElementById('login-error').classList.add('hidden');
+    showScreen('login');
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
+    if (!document.getElementById('screen-login').classList.contains('hidden-screen')) doLogin();
+    else if (!document.getElementById('screen-register').classList.contains('hidden-screen')) doRegister();
+  });
+
   // ════════════════════════════════════
   //  DATA
   // ════════════════════════════════════
